@@ -14,7 +14,7 @@ jobs:
 tests:
 runs-on: ubuntu-latest
 
-
+```
 services:
   postgres:
     image: postgres:15
@@ -81,4 +81,4 @@ steps:
   - name: dbt compile
     working-directory: banking_dbt
     run: dbt compile
-
+```
