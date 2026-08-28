@@ -2,9 +2,10 @@ name: CI
 
 on:
 push:
-branches: [ main, dev ]
+branches: [main, dev]
+
 pull_request:
-branches: [ main ]
+branches: [main]
 
 jobs:
 tests:
@@ -54,7 +55,6 @@ steps:
   - name: Setup dbt profile
     run: |
       mkdir -p ~/.dbt
-
       cat > ~/.dbt/profiles.yml <<EOL
       jaffle_shop_1:
         target: dev
@@ -73,18 +73,13 @@ steps:
 
   - name: dbt debug
     working-directory: banking_dbt
-    run: |
-      dbt debug
+    run: dbt debug
 
   - name: dbt deps
     working-directory: banking_dbt
-    run: |
-      dbt deps
+    run: dbt deps
 
   - name: dbt compile
     working-directory: banking_dbt
-    run: |
-      dbt compile
+    run: dbt compile
 ```
-
-# test 4
