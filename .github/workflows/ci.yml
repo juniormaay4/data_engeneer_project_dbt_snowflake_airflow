@@ -66,7 +66,6 @@ jobs:
                 warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
                 schema: ANALYTICS
           EOL
-
       - name: dbt compile (validation)
         run: |
           cd banking_dbt
