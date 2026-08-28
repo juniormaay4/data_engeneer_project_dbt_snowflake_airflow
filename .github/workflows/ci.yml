@@ -1,84 +1,82 @@
 name: CI
 
 on:
-push:
-branches:
-- main
-- dev
+  push:
+    branches:
+      - main
+      - dev
 
-pull_request:
-branches:
-- main
+  pull_request:
+    branches:
+      - main
 
 jobs:
-tests:
-runs-on: ubuntu-latest
+  tests:
+    runs-on: ubuntu-latest
 
-```
-services:
-  postgres:
-    image: postgres:15
-    env:
-      POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-      POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
-      POSTGRES_DB: banking
-    ports:
-      - 5432:5432
-    options: >-
-      --health-cmd pg_isready
-      --health-interval 10s
-      --health-timeout 5s
-      --health-retries 5
+    services:
+      postgres:
+        image: postgres:15
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: banking
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
 
-steps:
-  - name: Checkout repository
-    uses: actions/checkout@v4
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
 
-  - name: Setup Python
-    uses: actions/setup-python@v5
-    with:
-      python-version: "3.11"
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
 
-  - name: Install dependencies
-    run: |
-      python -m pip install --upgrade pip
-      pip install -r requirements.txt
-      pip install dbt-snowflake pytest ruff
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install dbt-snowflake pytest ruff
 
-  - name: Run Ruff
-    run: ruff check .
+      - name: Run Ruff
+        run: ruff check .
 
-  - name: Run unit tests
-    run: pytest tests/ || echo "No tests yet"
+      - name: Run unit tests
+        run: pytest tests/ || echo "No tests yet"
 
-  - name: Setup dbt profile
-    run: |
-      mkdir -p ~/.dbt
-      cat > ~/.dbt/profiles.yml <<EOL
-      jaffle_shop_1:
-        target: dev
-        outputs:
-          dev:
-            type: snowflake
-            account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
-            user: ${{ secrets.SNOWFLAKE_USER }}
-            password: ${{ secrets.SNOWFLAKE_PASSWORD }}
-            role: ACCOUNTADMIN
-            database: BANKING
-            warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
-            schema: ANALYTICS
-            threads: 4
-      EOL
+      - name: Setup dbt profile
+        run: |
+          mkdir -p ~/.dbt
+          cat > ~/.dbt/profiles.yml <<EOL
+          jaffle_shop_1:
+            target: dev
+            outputs:
+              dev:
+                type: snowflake
+                account: ${{ secrets.SNOWFLAKE_ACCOUNT }}
+                user: ${{ secrets.SNOWFLAKE_USER }}
+                password: ${{ secrets.SNOWFLAKE_PASSWORD }}
+                role: ACCOUNTADMIN
+                database: BANKING
+                warehouse: ${{ secrets.SNOWFLAKE_WAREHOUSE }}
+                schema: ANALYTICS
+                threads: 4
+          EOL
 
-  - name: dbt debug
-    working-directory: banking_dbt
-    run: dbt debug
+      - name: dbt debug
+        working-directory: banking_dbt
+        run: dbt debug
 
-  - name: dbt deps
-    working-directory: banking_dbt
-    run: dbt deps
+      - name: dbt deps
+        working-directory: banking_dbt
+        run: dbt deps
 
-  - name: dbt compile
-    working-directory: banking_dbt
-    run: dbt compile
-```
+      - name: dbt compile
+        working-directory: banking_dbt
+        run: dbt compile
