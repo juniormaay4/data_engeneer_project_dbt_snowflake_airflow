@@ -1,6 +1,8 @@
-from airflow import DAG
+from datetime import datetime, timedelta, timezone
+
 from airflow.operators.bash import BashOperator
-from datetime import datetime, timedelta
+
+from airflow import DAG
 
 default_args = {
     "owner": "airflow",
@@ -14,7 +16,7 @@ with DAG(
     default_args=default_args,
     description="Run dbt snapshots for SCD2",
     schedule_interval="@daily",     # or "@hourly" depending on your needs
-    start_date=datetime(2025, 9, 1),
+    start_date=datetime(2025, 9, 1, tzinfo=timezone.utc),
     catchup=False,
     tags=["dbt", "snapshots"],
 ) as dag:
@@ -27,6 +29,3 @@ with DAG(
         task_id="dbt_run_marts",
         bash_command="cd /opt/airflow/banking_dbt && dbt run --select marts --profiles-dir /home/airflow/.dbt"
     )
-
-
-    dbt_snapshot

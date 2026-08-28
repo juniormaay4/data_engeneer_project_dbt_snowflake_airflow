@@ -1,13 +1,14 @@
-import time
-import psycopg2
-from decimal import Decimal, ROUND_DOWN
-from faker import Faker
-import random
 import argparse
-import sys
 import os
+import random
+import sys
+import time
+from decimal import ROUND_DOWN, Decimal
 from pathlib import Path
+
+import psycopg2
 from dotenv import load_dotenv
+from faker import Faker
 
 # Charger le .env situé à la racine du projet banking
 BASE_DIR = Path(__file__).resolve().parent.parent

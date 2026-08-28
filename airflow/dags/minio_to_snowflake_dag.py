@@ -1,10 +1,12 @@
 import os
+from datetime import datetime, timedelta, timezone
+
 import boto3
 import snowflake.connector
-from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
-from datetime import datetime, timedelta
 from dotenv import load_dotenv
+
+from airflow import DAG
 
 # Load environment variables
 load_dotenv()
@@ -101,7 +103,7 @@ with DAG(
     default_args=default_args,
     description="Load MinIO parquet into Snowflake RAW tables",
     schedule_interval="*/1 * * * *",
-    start_date=datetime(2025, 1, 1),
+    start_date=datetime(2025, 1, 1, tzinfo=timezone.utc),
     catchup=False,
 ) as dag:
 
