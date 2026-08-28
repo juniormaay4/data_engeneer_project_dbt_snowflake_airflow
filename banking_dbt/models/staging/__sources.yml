@@ -1,0 +1,19 @@
+version: 2
+
+sources:
+  - name: raw
+    database: BANKING
+    schema: RAW
+
+    description: >
+      Données bancaires brutes provenant de MinIO et chargées dans Snowflake.
+
+    tables:
+      - name: customers
+        description: Table contenant les clients.
+
+      - name: accounts
+        description: Table contenant les comptes bancaires.
+
+      - name: transactions
+        description: Table contenant les transactions.
