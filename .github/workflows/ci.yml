@@ -2,10 +2,12 @@ name: CI
 
 on:
 push:
-branches: [main, dev]
-
+branches:
+- main
+- dev
 pull_request:
-branches: [main]
+branches:
+- main
 
 jobs:
 tests:
@@ -32,7 +34,7 @@ steps:
     uses: actions/checkout@v4
 
   - name: Setup Python
-    uses: actions/setup-python@v4
+    uses: actions/setup-python@v5
     with:
       python-version: "3.11"
 
@@ -40,17 +42,13 @@ steps:
     run: |
       python -m pip install --upgrade pip
       pip install -r requirements.txt
-      pip install dbt-snowflake
-      pip install pytest
-      pip install ruff
+      pip install dbt-snowflake pytest ruff
 
   - name: Run Ruff
-    run: |
-      ruff check .
+    run: ruff check .
 
   - name: Run unit tests
-    run: |
-      pytest tests/ || echo "No tests yet"
+    run: pytest tests/ || echo "No tests yet"
 
   - name: Setup dbt profile
     run: |
